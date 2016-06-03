@@ -112,7 +112,6 @@ class Game:
         self.on_cleanup()
 
 game_intro = DisplayScreens(intro_screen,0,0)
-game_menu = DisplayScreens(menu_screen,0,0)
 
 game_intro.fade(5)
 
