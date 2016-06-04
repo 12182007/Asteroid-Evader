@@ -7,7 +7,7 @@ display_height = 600
 gameDisplay = pygame.display.set_mode((display_width,display_height),pygame.HWSURFACE)
 background = pygame.Surface(gameDisplay.get_size())
 background.convert()
-
+framerate = pygame.time.Clock()
 # 1.1 Colors Declaration
 white = (255,255,255)
 black = (0,0,0)
@@ -36,11 +36,11 @@ paused_screen = pygame.image.load('assets/images/screens/Paused_screen.png')
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
-def texts(text,font,color):
-    textSurface = font.render(text, True, color)
+def texts(text, font):
+    textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
-def buttons(text,x,y,width,height,active,inactive,text_size, action=None):
+def buttons(text,x,y,width,height,inactive,active,text_size, action=None):
     mouse_pos = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     if x + width > mouse_pos[0] > x and y + height > mouse_pos[1] > y:
@@ -50,9 +50,9 @@ def buttons(text,x,y,width,height,active,inactive,text_size, action=None):
     else:
         pygame.draw.rect(gameDisplay, inactive, (x,y,width,height))
 
-    buttonfont = pygame.font.Font('fonts/Montserrat-Hairline.otf',text_size)
-    textSurf, textRect = texts(text, buttonfont, color)
-    textRect.center = ( (x+(width/2)) , (y +(height/2)) )
+    buttonfont = pygame.font.Font('assets/fonts/Montserrat-Hairline.otf', text_size)
+    textSurf, textRect = texts(text, buttonfont)
+    textRect.center = ((x+(width/2)) , (y +(height/2)))
     gameDisplay.blit(textSurf, textRect)
 
 def load_image(image):
@@ -115,14 +115,26 @@ class DisplayScreens:
                 gameDisplay.blit(background,(0,0))
                 pygame.display.flip()
                 pygame.time.delay(time)
+
     def show(self):
         gameDisplay.blit(self.image,(0,0))
+
+    def menu(self):
+        running = True
+        while running:
+            self.show()
+            buttons('START GAME', 293, 340, 212, 52, blue, white,14)
+    def update(self):
+        pygame.display.update()
+        framerate.tick(60)
+
 
 class Game:
     def __init__(self):
         self.running = True
         self.display_surf = None
         self.size = gameDisplay
+
     def on_init(self):
         pygame.init()
         self._display_surf = gameDisplay, pygame.display.set_caption('Asteroid Evader')
@@ -132,10 +144,13 @@ class Game:
             self.running = False
     def on_loop(self):
         pass
+
     def on_render(self):
         pass
+
     def on_cleanup(self):
         pygame.quit()
+
     def on_execute(self):
         if self.on_init() == False:
             self._running = False
@@ -145,10 +160,6 @@ class Game:
             self.on_loop()
             self.on_render()
         self.on_cleanup()
-
-game_intro = DisplayScreens(intro_screen,0,0)
-
-game_intro.fade(5)
 
 if __name__ == "__main__":
     theGame = Game()
