@@ -1,4 +1,4 @@
-import pygame
+import pygame, os.path
 from pygame.locals import*
 
 # 1.0 - Display & screen variables
@@ -34,29 +34,64 @@ settings_screen = pygame.image.load('assets/images/screens/settings.png')
 gameover_screen = pygame.image.load('assets/images/screens/Game_screen.png')
 paused_screen = pygame.image.load('assets/images/screens/Paused_screen.png')
 
+main_dir = os.path.split(os.path.abspath(__file__))[0]
+
+def texts(text,font,color):
+    textSurface = font.render(text, True, color)
+    return textSurface, textSurface.get_rect()
+
+def buttons(text,x,y,width,height,active,inactive,text_size, action=None):
+    mouse_pos = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    if x + width > mouse_pos[0] > x and y + height > mouse_pos[1] > y:
+        pygame.draw.rect(gameDisplay, active,(x,y,width,height))
+        if click[0] == 1 and action is not None:
+            action()
+    else:
+        pygame.draw.rect(gameDisplay, inactive, (x,y,width,height))
+
+    buttonfont = pygame.font.Font('fonts/Montserrat-Hairline.otf',text_size)
+    textSurf, textRect = texts(text, buttonfont, color)
+    textRect.center = ( (x+(width/2)) , (y +(height/2)) )
+    gameDisplay.blit(textSurf, textRect)
+
+def load_image(image):
+    image = os.path.join(main_dir, 'data', image)
+    try:
+        surface = pygame.image.load(image)
+    except pygame.error:
+        raise SystemExit('Could not load image "%s" %s' %(image, pygame.get.error()))
+    return surface.convert()
+def load_images(images):
+    imgs = []
+    for image in images:
+        imgs.append(load_image(image))
+    return imgs
+
+def no_sound():
+    pass
+
+class Sound:
+    def __init__(self,sound):
+        self.sound = os.path.join(main_dir,'data',sound)
+
+    def load_sound(self):
+        if not pygame.mixer:
+            return no_sound()
+        try:
+            play_sound = pygame.mixer.Sound(self.sound)
+            return play_sound
+        except pygame.error:
+            print('Error, unable to load, %s' % self.sound)
+        return no_sound()
+
+
+
 class DisplayText:
     def __init__(self,text,font):
         self.text = text
         self.font = font
-        textSurface = font.render(text, True, black)
-        return textSurface, textSurface.get_rect()
 
-    def buttons(self,x,y,width,height,active,inactive,text_size, action=None):
-        mouse_pos = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
-        if x + width > mouse_pos[0] > x and y + height > mouse_pos[1] > y:
-            pygame.draw.rect(gameDisplay, active,(x,y,width,height))
-
-            if click[0] == 1 and action is not None:
-
-                action()
-        else:
-            pygame.draw.rect(gameDisplay, inactive, (x,y,width,height))
-
-        buttonfont = pygame.font.Font('fonts/Montserrat-Hairline.otf',text_size)
-        textSurf, textRect = texts(self.text, buttonfont)
-        textRect.center = ( (x+(width/2)) , (y +(height/2)) )
-        gameDisplay.blit(textSurf, textRect)
     def show(self,x,y):
         gameDisplay.blit(self.text,(self.x,self.y))
 
