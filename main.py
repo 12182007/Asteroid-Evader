@@ -11,7 +11,7 @@ white = (255,255,255)
 black = (0,0,0)
 blue = (77,215,250,0)
 
-class App:
+class Game:
     def __init__(self):
         self._running = True
         self._display_surf = None
@@ -32,7 +32,6 @@ class App:
         pass
     def on_cleanup(self):
         pygame.quit()
-
     def on_execute(self):
         if self.on_init() == False:
             self._running = False
@@ -45,5 +44,5 @@ class App:
         self.on_cleanup()
 
 if __name__ == "__main__" :
-    theApp = App()
+    theApp = Game()
     theApp.on_execute()
