@@ -7,20 +7,6 @@ DISPLAY_HEIGHT = 600
 FRAMES_PER_SECOND = 60
 GAME_DISPLAY = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.HWSURFACE | pygame.DOUBLEBUF)
 
-# Backgrounds & Game Screen
-intro_screen = pygame.image.load('screens/Intro Screen.jpg')
-menu_screen = pygame.image.load('screens/menu_screen.png')
-how_to_screen = pygame.image.load('screens/how_to_play.png')
-gaming_screen = pygame.image.load('screens/gaming_screen.png')
-gender_select = pygame.image.load('screens/gender_select.png')
-character_maleimg = pygame.image.load('screens/character_male.png')
-character_femaleimg = pygame.image.load('screens/character_female.png')
-highscore_screen = pygame.image.load('screens/highscore.png')
-dashboard = pygame.image.load('screens/dashboard.png')
-name_screen = pygame.image.load('screens/name_select.png')
-settings_screen = pygame.image.load('screens/settings.png')
-gameover_screen = pygame.image.load('screens/Game_screen.png')
-paused_screen = pygame.image.load('screens/Paused_screen.png')
 
 #Colors
 white = (255,255,255)
