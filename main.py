@@ -140,33 +140,50 @@ class DisplayScreen(object):
                 pygame.display.flip()
                 pygame.time.delay(time)
 
-#Displays the text onto the screen
-def texts(text, font):
-    textSurface = font.render(text, True, black)
-    return textSurface, textSurface.get_rect()
+class DisplayText(object):
+    def __init__(self,text,color,size):
+        self.text = text
+        self.color = color
+        self.size = size
 
-#Create buttons and makes them clickable
-def buttons(text,x,y,width,height,inactive,active,text_size, action=None):
-    mouse_pos = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-    if x + width > mouse_pos[0] > x and y + height > mouse_pos[1] > y:
-        pygame.draw.rect(gameDisplay, active,(x,y,width,height))
+    def texts(self, text, font):
+        TextSurf = font.render(text, True, self.color)
+        return TextSurf, TextSurf.get_rect()
 
-        if click[0] == 1 and action is not None:
+    def show(self):
+        main_text = pygame.font.Font('freesansbold.ttf',self.size)
+        TextSurf, TextRect = DisplayText.texts(self.text, main_text)
+        TextRect.center = ((display_width/2),(display_height/2))
+        gameDisplay.blit(TextSurf, TextRect)
 
-            action()
-    else:
-        pygame.draw.rect(gameDisplay, inactive, (x,y,width,height))
+    def buttons(self,x,y,width,height,inactive,active,text_size, action=None):
+        mouse_pos = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        if x + width > mouse_pos[0] > x and y + height > mouse_pos[1] > y:
+            pygame.draw.rect(gameDisplay, active,(x,y,width,height))
 
-    buttonText = pygame.font.Font('fonts/Montserrat-Hairline.otf',text_size)
-    textSurf, textRect = texts(text, buttonText)
-    textRect.center = ( (x+(width/2)) , (y +(height/2)) )
-    gameDisplay.blit(textSurf, textRect)
+            if click[0] == 1 and action is not None:
+
+                action()
+        else:
+            pygame.draw.rect(gameDisplay, inactive, (x,y,width,height))
+
+        buttonText = pygame.font.Font('fonts/Montserrat-Hairline.otf', self.size)
+        textSurf, textRect = DisplayText.texts(self,self.text,buttonText)
+        textRect.center = ( (x+(width/2)) , (y +(height/2)) )
+        gameDisplay.blit(textSurf, textRect)
+
+
 
 #Displays the main menu screen
 def main_menu():
     pygame.time.delay(100)
     menu = True
+    start_game_button = DisplayText('Start Game',black,14)
+    how_to_play_button = DisplayText('How To Play',black,14)
+    highscore_button = DisplayText('Highscores',black,14)
+    settings_button = DisplayText('',black,14)
+
     screen = DisplayScreen(menu_screen)
     star_X = random.randrange(0,display_width)
     star_Y = - 349
@@ -183,8 +200,6 @@ def main_menu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
-
         screen.show()
         star(star_X,star_Y,star_width,star_height,blue)
         star(star_X2,star_Y2,star_width2,star_height2,blue)
@@ -198,12 +213,10 @@ def main_menu():
         if star_Y2 > display_height:
             star_Y2 = -150
             star_X2 = random.randrange(0,display_width)
-
-        buttons('START GAME', 293, 340, 212, 52, blue, white,14, gender_screen)
-        buttons('HOW TO PLAY', 293, 405, 213, 52, blue, white,14, how_play)
-        buttons('HIGHSCORES', 293, 469, 213, 52, blue, white,14, highscore_select)
-        buttons('', 760, 0, 40, 38, blue, white,14, settings)
-        gameDisplay.blit(settings_icon,(772,10))
+        start_game_button.buttons(293,340,212,52, blue, white, 14, gender_screen)
+        how_to_play_button.buttons(293,405,212,52, blue, white, 14, gender_screen)
+        highscore_button.buttons(293,469,212,52, blue, white, 14, gender_screen)
+        settings_button.buttons(760, 0, 40, 38, blue, white, 14, gender_screen)
         pygame.display.update()
         fps.tick(60)
 
@@ -967,8 +980,6 @@ def game():
         pygame.display.update()#updates screen
         fps.tick(60) #clock rate is set at 60
 
-intro = DisplayScreen(intro_screen)
-intro.fade(10)
 
 menu_music.play()
 main_menu()
