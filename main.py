@@ -116,11 +116,12 @@ def not_settings():
 
 
 #Displays the intro screen
-class FadeScreen(object):
-    def __init__(self,image,x,y):
+class DisplayScreen(object):
+    def __init__(self,image):
         self.image = image
-        self.x = x
-        self.y = y
+    def show(self):
+        gameDisplay.blit(self.image,(0,0))
+
     def fade(self,time):
         self.time = time
         fading = True
@@ -137,10 +138,6 @@ class FadeScreen(object):
                 gameDisplay.blit(background,(0,0))
                 pygame.display.flip()
                 pygame.time.delay(time)
-
-
-def display_screen(image,x,y): # allows for any the placement of any background images
-    gameDisplay.blit(image, (0,0))
 
 #Displays the text onto the screen
 def texts(text, font):
@@ -169,6 +166,7 @@ def buttons(text,x,y,width,height,inactive,active,text_size, action=None):
 def main_menu():
     pygame.time.delay(100)
     menu = True
+    screen = DisplayScreen(menu_screen)
     star_X = random.randrange(0,display_width)
     star_Y = - 349
     star_width = 2
@@ -186,7 +184,7 @@ def main_menu():
                 quit()
 
 
-        display_screen(menu_screen,0,0)
+        screen.show()
         star(star_X,star_Y,star_width,star_height,blue)
         star(star_X2,star_Y2,star_width2,star_height2,blue)
 
@@ -968,8 +966,8 @@ def game():
         pygame.display.update()#updates screen
         fps.tick(60) #clock rate is set at 60
 
-fade = FadeScreen(intro_screen,0,0)
-fade.fade(10)
+intro = DisplayScreen(intro_screen)
+intro.fade(10)
 
 menu_music.play()
 main_menu()
