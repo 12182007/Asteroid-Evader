@@ -20,7 +20,7 @@ dark_blue = (182, 239, 252)
 green = (0, 216, 29)
 
 # Creating window for gaming screen & Caption
-gameDisplay = pygame.display.set_mode((display_width, display_height))
+gameDisplay = pygame.display.set_mode((display_width, display_height), pygame.HWSURFACE | pygame.DOUBLEBUF)
 pygame.display.set_caption('Asteroid Evader')
 #frames per second
 fps = pygame.time.Clock()
@@ -118,7 +118,8 @@ def not_settings():
 #Displays the intro screen
 class DisplayScreen(object):
     def __init__(self,image):
-        self.image = image
+        self.image = image.convert()
+
     def show(self):
         gameDisplay.blit(self.image,(0,0))
 
