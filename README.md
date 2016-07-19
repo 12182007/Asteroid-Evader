@@ -30,6 +30,7 @@ If you don't have pip, you can watch this video showing you how to get it on [Yo
 
 #### Running
 Once you have everything ready to run pygame, simply open the the zip file and double click the "main.py" file. You should be presented with this screen
+
 ![Alt text](5.png)
 
 #### Built With
