@@ -2,7 +2,7 @@
 Asteroid Evader is a 2D space survival/adventure game created with Pygame. The aim of this game is to survive for as long as possible, you will ecounter obstacles such as Asteroids, Mines and Bombs. There are also perks available to help you in your journey. I created this game to experiment with pygame so initially I made it fairly simple however in the future I'm looking to expand this into a fully fledged 2D adventure game.
 
 
-![Alt text](5.PNG)
+![Alt text](5.png)
 
 ![Alt text](3.PNG)
 
