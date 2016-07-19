@@ -12,6 +12,8 @@ Asteroid Evader is a 2D space survival/adventure game created with Pygame. The a
 These instructions will get you a copy of the project up and running on your local machine.
 Firstly click here to download the game [Download](https://github.com/AaronKazah/Asteroid-Evader/archive/v1.0.zip)
 
+
+
 #### Prerequisities
 Here are the things you need to run the game. The latest version of python and the latest version of pygame. You can get the latest version of Python from [Python](https://www.python.org/)
 
@@ -24,9 +26,11 @@ pip install pygame‑1.9.2a0‑cp34‑none‑win_amd64.whl
 ```
 If you don't have pip, you can watch this video showing you how to get it on [Youtube](https://www.youtube.com/watch?v=zPMr0lEMqpo)
 
+
+
 #### Running
 Once you have everything ready to run pygame, simply open the the zip file and double click the "main.py" file. You should be presented with this screen
-![Alt text](5.PNG)
+![Alt text](5.png)
 
 #### Built With
 - Python
