@@ -112,10 +112,9 @@ def how_to_play_none():
 def not_settings():
     global run_settings
     run_settings = False
-# ------- Start Of Actual Programming ------
 
 
-#Displays the intro screen
+#This class is used to display different screens
 class DisplayScreen(object):
     def __init__(self,image):
         self.image = image.convert()
@@ -140,6 +139,7 @@ class DisplayScreen(object):
                 pygame.display.flip()
                 pygame.time.delay(time)
 
+#This class is used to display text or buttons
 class DisplayText(object):
     def __init__(self,text,color,size):
         self.text = text
@@ -176,6 +176,7 @@ class DisplayText(object):
         pygame.display.update()
         fps.tick(15)
 
+#This class is used to load obstacles into screens into screen
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, image, x,y,width,height,direction,speed):
         super(Obstacle, self).__init__()
