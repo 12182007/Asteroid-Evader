@@ -163,7 +163,6 @@ class DisplayText(object):
             pygame.draw.rect(gameDisplay, active,(x,y,width,height))
 
             if click[0] == 1 and action is not None:
-
                 action()
         else:
             pygame.draw.rect(gameDisplay, inactive, (x,y,width,height))
@@ -172,6 +171,78 @@ class DisplayText(object):
         textSurf, textRect = DisplayText.texts(self,self.text,buttonText)
         textRect.center = ( (x+(width/2)) , (y +(height/2)) )
         gameDisplay.blit(textSurf, textRect)
+
+    def update(self):
+        pygame.display.update()
+        fps.tick(15)
+
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self, image, x,y,width,height,direction,speed):
+        super(Obstacle, self).__init__()
+        self.image = image.convert_alpha()
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.direction = direction
+        self.speed = speed
+
+    def move(self):
+        gameDisplay.blit(self.image,(self.x,self.y))
+        if self.direction == 'down':
+            self.y += self.speed
+            if self.y > display_height:
+                self.y = 0
+        if self.direction == 'up':
+            self.y -= self.speed
+            if self.y < display_height:
+                self.y = 600 + self.height
+        if self.direction == 'right':
+            self.x += self.speed
+            if self.x > display_width:
+                self.x = 0
+        if self.direction == 'left':
+            self.x -= self.speed
+            if self.x < display_height:
+                self.x = 0 + self.width
+
+    def update(self):
+        pygame.display.update()
+        fps.tick(60)
+
+class Stars(pygame.sprite.Sprite):
+    def __init__(self, x,y,width,height,color,direction,speed):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height= height
+        self.color = color
+        self.direction = direction
+        self.speed = speed
+
+
+    def move(self):
+        pygame.draw.rect(gameDisplay, self.color, [self.x, self.y, self.width, self.height])
+        if self.direction == 'down':
+            self.y += self.speed
+            if self.y > display_height:
+                self.y = 0
+        if self.direction == 'up':
+            self.y -= self.speed
+            if self.y < display_height:
+                self.y = 600 + self.height
+        if self.direction == 'right':
+            self.x += self.speed
+            if self.x > display_width:
+                self.x = 0
+        if self.direction == 'left':
+            self.x -= self.speed
+            if self.x < display_height:
+                self.x = 0 + self.width
+
+    def update(self):
+        pygame.display.update()
+        fps.tick(60)
 
 
 
@@ -183,17 +254,14 @@ def main_menu():
     how_to_play_button = DisplayText('How To Play',black,14)
     highscore_button = DisplayText('Highscores',black,14)
     settings_button = DisplayText('',black,14)
-
     screen = DisplayScreen(menu_screen)
-    star_X = random.randrange(0,display_width)
-    star_Y = - 349
-    star_width = 2
-    star_height = 20
+    star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
+    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'down',21)
+    star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
+    star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
+    star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
+    star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
 
-    star_X2 = random.randrange(0,display_width)
-    star_Y2 = - 500
-    star_width2 = 1
-    star_height2 = 19
     while menu:
         for event in pygame.event.get():
             print(event)
@@ -201,24 +269,18 @@ def main_menu():
                 pygame.quit()
                 quit()
         screen.show()
-        star(star_X,star_Y,star_width,star_height,blue)
-        star(star_X2,star_Y2,star_width2,star_height2,blue)
-
-        star_Y += 35
-        star_Y2 += 35
-
-        if star_Y > display_height:
-            star_Y = -50
-            star_X = random.randrange(0,display_width)
-        if star_Y2 > display_height:
-            star_Y2 = -150
-            star_X2 = random.randrange(0,display_width)
         start_game_button.buttons(293,340,212,52, blue, white, 14, gender_screen)
         how_to_play_button.buttons(293,405,212,52, blue, white, 14, gender_screen)
         highscore_button.buttons(293,469,212,52, blue, white, 14, gender_screen)
         settings_button.buttons(760, 0, 40, 38, blue, white, 14, gender_screen)
+        star1.move()
+        star3.move()
+        star4.move()
+        star2.move()
+        star5.move()
+        star6.move()
+
         pygame.display.update()
-        fps.tick(60)
 
 #Displays the paused screen
 
@@ -688,8 +750,6 @@ def character(image,name,health,color):
 
 
 #displays the moving stars
-def star(star_X, star_Y, start_Width, star_Height, color):
-    pygame.draw.rect(gameDisplay, color, [star_X, star_Y, start_Width, star_Height])
 
 #executes the actual game function
 def game():
