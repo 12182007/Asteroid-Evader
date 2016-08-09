@@ -1043,7 +1043,7 @@ def game():
         fps.tick(60) #clock rate is set at 60
 
 
-menu_music.play()
+menu_music.play(-1)
 main_menu()
 pygame.quit()
 quit()
