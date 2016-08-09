@@ -228,6 +228,7 @@ class Stars(pygame.sprite.Sprite):
             self.y += self.speed
             if self.y > display_height:
                 self.y = 0
+                self.x = random.randrange(0,display_width)
         if self.direction == 'up':
             self.y -= self.speed
             if self.y < display_height:
