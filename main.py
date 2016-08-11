@@ -7,20 +7,17 @@ pygame.init()
 display_width = 800
 display_height = 600
 
-
 # Colors Declaration
 white = (255,255,255)
 black = (0,0,0)
 red = (223,0,0)
-pink = (189,15,224)
-orange = (255,137,0)
 amber = (247,218,0)
 blue = (77,215,250,0)
 dark_blue = (182, 239, 252)
 green = (0, 216, 29)
 
 # Creating window for gaming screen & Caption
-gameDisplay = pygame.display.set_mode((display_width, display_height), pygame.HWSURFACE | pygame.DOUBLEBUF)
+gameDisplay = pygame.display.set_mode((display_width, display_height), pygame.HWSURFACE | pygame.DOUBLEBUF )
 pygame.display.set_caption('Asteroid Evader')
 #frames per second
 fps = pygame.time.Clock()
@@ -84,6 +81,10 @@ character_3 = pygame.image.load('assets/avatar/char_3.png')
 character_4 = pygame.image.load('assets/avatar/char_4.png')
 character_5 = pygame.image.load('assets/avatar/char_5.png')
 character_6 = pygame.image.load('assets/avatar/char_6.png')
+
+
+#Stars - Blue
+
 
 # Global variables for running functions
 character_img = None
@@ -167,6 +168,7 @@ class DisplayText(object):
 
             if click[0] == 1 and action is not None:
                 #if the button is clicked then another function is called.
+                clicked.play()
                 action()
         else:
             pygame.draw.rect(gameDisplay, inactive, (x,y,width,height))
@@ -176,9 +178,6 @@ class DisplayText(object):
         textRect.center = ( (x+(width/2)) , (y +(height/2)) )
         gameDisplay.blit(textSurf, textRect)
 
-    def update(self):
-        pygame.display.update()
-        fps.tick(15)
 
 #This class is used to load actors which you can't control into screens into screen
 class NonActor(pygame.sprite.Sprite):
@@ -214,10 +213,6 @@ class NonActor(pygame.sprite.Sprite):
                 self.x = 0 + self.width
 
 
-    def update(self):
-        pygame.display.update()
-        fps.tick(60)
-
 #Same as above
 class Stars(pygame.sprite.Sprite):
     def __init__(self, x,y,width,height,color,direction,speed):
@@ -249,11 +244,13 @@ class Stars(pygame.sprite.Sprite):
             if self.x < display_height:
                 self.x = 0 + self.width
 
-    def update(self):
-        pygame.display.update()
-        fps.tick(60)
 
-
+star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
+star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'down',21)
+star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
+star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
+star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
+star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
 
 #Function displays main menu screen.
 def main_menu():
@@ -265,12 +262,6 @@ def main_menu():
     settings_button = DisplayText('',black,14)
     screen = DisplayScreen(menu_screen)
 
-    star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
-    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'down',21)
-    star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
-    star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
-    star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
-    star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
 
     while menu:
         for event in pygame.event.get():
@@ -290,36 +281,22 @@ def main_menu():
         star2.move()
         star5.move()
         star6.move()
-
         pygame.display.update()
+        fps.tick(60)
 
 #Displays the paused screen
-
 def pausedd():
     pygame.time.delay(100)
     global paused
     paused = True
+    screen = paused_screen
     while paused:
         for event in pygame.event.get():
             print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
-
-        display_screen(paused_screen,0,0)
-        star(star_X,star_Y,star_width,star_height,blue)
-        star(star_X2,star_Y2,star_width2,star_height2,blue)
-
-        star_Y += 35
-        star_Y2 += 35
-
-        if star_Y > display_height:
-            star_Y = -50
-            star_X = random.randrange(0,display_width)
-        if star_Y2 > display_height:
-            star_Y2 = -150
-            star_X2 = random.randrange(0,display_width)
+        screen.show()
 
         buttons('Resume Game', 293, 340, 212, 52, blue, white,14, unpause)
         pygame.display.update()
@@ -1035,8 +1012,6 @@ def game():
             score = 0
         if health <= 0:
             game_over() #calls the gameover function
-        pygame.display.update()#updates screen
-        fps.tick(60) #clock rate is set at 60
 
 
 menu_music.play(-1)
