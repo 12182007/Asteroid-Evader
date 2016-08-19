@@ -386,11 +386,11 @@ def GenderScreen():
         star6.move()
 
         male.buttons(126,300,203,64,blue,white,15,CharMaleScreen)
-        female.buttons(494, 300, 203, 64,blue,white,15,CharMaleScreen)
+        female.buttons(494, 300, 203, 64,blue,white,15,CharFemaleScreen)
         back.buttons(0, 0, 40, 38, blue, white,14, MenuScreen)
         gameDisplay.blit(back_icon,(10,10))
 
-        settings.buttons(760, 0, 40, 38, blue, white,14, settings)
+        settings.buttons(760, 0, 40, 38, blue, white,14, SettingsScreen)
         gameDisplay.blit(settings_icon,(772,10))
         pygame.display.update()
         fps.tick(60)
@@ -414,7 +414,7 @@ def CharMaleScreen():
     pygame.time.delay(100)
     selection = True
     star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
-    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'up',21)
+    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'down',21)
     star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
     star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
     star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
@@ -454,42 +454,41 @@ def CharMaleScreen():
 def CharFemaleScreen():
     pygame.time.delay(100)
     selection = True
-    star_X = random.randrange(0,display_width)
-    star_Y = - 349
-    star_width = 2
-    star_height = 20
+    star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
+    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'down',21)
+    star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
+    star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
+    star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
+    star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
 
-    star_X2 = random.randrange(0,display_width)
-    star_Y2 = - 500
-    star_width2 = 1
-    star_height2 = 19
+    screen = DisplayScreen(character_femaleimg)
+    choice1 = DisplayText('CHOOSE ME',black,12)
+    choice2 = DisplayText('CHOOSE ME',black,12)
+    choice3 = DisplayText('CHOOSE ME',black,12)
+    back = DisplayText('',black,12)
+    settings = DisplayText('',black,12)
+
     while selection:
         for event in pygame.event.get():
             print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        display_screen(character_femaleimg,0,0)
-        star(star_X,star_Y,star_width,star_height,blue)
-        star(star_X2,star_Y2,star_width2,star_height2,blue)
+        screen.show()
+        star1.move()
+        star2.move()
+        star3.move()
+        star4.move()
+        star5.move()
+        star6.move()
 
-        star_Y += 35
-        star_Y2 += 35
-
-        if star_Y > display_height:
-            star_Y = -50
-            star_X = random.randrange(0,display_width)
-        if star_Y2 > display_height:
-            star_Y2 = -150
-            star_X2 = random.randrange(0,display_width)
-
-        buttons('CHOOSE ME', 127, 357, 134, 36, blue, dark_blue, 12, char_4)
-        buttons('CHOOSE ME', 333, 359, 134, 36, blue, dark_blue, 12, char_5)
-        buttons('CHOOSE ME', 539, 357, 134, 36, blue, dark_blue, 12, char_6)
-        buttons('', 0, 0, 40, 38, blue, white,14, gender_screen)
+        choice1.buttons(127, 357, 134, 36, blue, dark_blue, 12, char_4)
+        choice2.buttons(333, 359, 134, 36, blue, dark_blue, 12, char_5)
+        choice3.buttons(539, 357, 134, 36, blue, dark_blue, 12, char_6)
+        back.buttons(0, 0, 40, 38, blue, white,14, GenderScreen)
         gameDisplay.blit(back_icon,(10,10))
 
-        buttons('', 760, 0, 40, 38, blue, white,14, settings)
+        settings.buttons(760, 0, 40, 38, blue, white,14, SettingsScreen)
         gameDisplay.blit(settings_icon,(772,10))
         pygame.display.update()
         fps.tick(60)
@@ -602,14 +601,18 @@ def spaceship(spaceship,x,y):
 def SettingsScreen():
     global run_settings
     run_settings = True
-    star_X = random.randrange(0,display_width)
-    star_Y = - 349
-    star_width = 2
-    star_height = 20
-    star_X2 = random.randrange(0,display_width)
-    star_Y2 = - 500
-    star_width2 = 1
-    star_height2 = 19
+    star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
+    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'up',21)
+    star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
+    star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
+    star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
+    star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
+    screen = DisplayScreen(settings_screen)
+    sound_off = DisplayText('Sound Off',black,12)
+    sound_on = DisplayText('Sound On',black,12)
+    website = DisplayText('Website',black,12)
+    back = DisplayText('',black,14)
+
     while run_settings:
         for event in pygame.event.get():
             print(event)
@@ -617,21 +620,18 @@ def SettingsScreen():
                 pygame.quit()
                 quit()
 
-        display_screen(settings_screen,0,0)
-        star(star_X,star_Y,star_width,star_height,blue)
-        star(star_X2,star_Y2,star_width2,star_height2,blue)
-        star_Y += 35
-        star_Y2 += 35
-        if star_Y > display_height:
-            star_Y = -50
-            star_X = random.randrange(0,display_width)
-        if star_Y2 > display_height:
-            star_Y2 = -150
-            star_X2 = random.randrange(0,display_width)
-        buttons('Sound OFF', 400, 206, 100, 36, blue, dark_blue, 12, sound_off)
-        buttons('Sound ON', 500, 206, 100, 36, blue, dark_blue, 12, sound_on)
-        buttons('Visit Website', 400, 280, 150, 36, blue, dark_blue, 12)
-        buttons('', 0, 0, 40, 38, blue, white,14, not_settings)
+        screen.show()
+        star1.move()
+        star2.move()
+        star3.move()
+        star4.move()
+        star5.move()
+        star6.move()
+
+        sound_off.buttons(400, 206, 100, 36, blue, dark_blue, 12, sound_off)
+        sound_on.buttons(500, 206, 100, 36, blue, dark_blue, 12, sound_on)
+        website.buttons(400, 280, 150, 36, blue, dark_blue, 12)
+        back.buttons(0, 0, 40, 38, blue, white,14, not_settings)
         gameDisplay.blit(back_icon,(10,10))
         pygame.display.update()
         fps.tick(60)
