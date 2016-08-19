@@ -30,7 +30,7 @@ intro_screen = pygame.image.load('screens/Intro Screen.jpg')
 menu_screen = pygame.image.load('screens/menu_screen.png')
 how_to_screen = pygame.image.load('screens/how_to_play.png')
 gaming_screen = pygame.image.load('screens/gaming_screen.png')
-gender_select = pygame.image.load('screens/gender_select.png')
+gender_screen = pygame.image.load('screens/gender_select.png')
 character_maleimg = pygame.image.load('screens/character_male.png')
 character_femaleimg = pygame.image.load('screens/character_female.png')
 highscore_screen = pygame.image.load('screens/highscore.png')
@@ -118,7 +118,7 @@ def not_settings():
 #This class is used to display different screens
 class DisplayScreen(object):
     #converts image to picels
-    def __init__(self,image):
+    def __init__(self, image):
         self.image = image.convert()
 
     #this method only shows the screen
@@ -234,7 +234,8 @@ class Stars(pygame.sprite.Sprite):
         if self.direction == 'up':
             self.y -= self.speed
             if self.y < display_height:
-                self.y = 600 + self.height
+                self.y = display_height + self.height
+                self.x = random.randrange(0,display_width)
         if self.direction == 'right':
             self.x += self.speed
             if self.x > display_width:
@@ -253,7 +254,7 @@ star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
 star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
 
 #Function displays main menu screen.
-def menu_screen():
+def MenuScreen():
     pygame.time.delay(100)
     menu = True
     start_game_button = DisplayText('Start Game',black,14)
@@ -270,10 +271,10 @@ def menu_screen():
                 pygame.quit()
                 quit()
         screen.show()
-        start_game_button.buttons(293,340,212,52, blue, white, 14, gender_screen)
-        how_to_play_button.buttons(293,405,212,52, blue, white, 14, how_play)
-        highscore_button.buttons(293,469,212,52, blue, white, 14, gender_screen)
-        settings_button.buttons(760, 0, 40, 38, blue, white, 14, gender_screen)
+        start_game_button.buttons(293,340,212,52, blue, white, 14, GenderScreen)
+        how_to_play_button.buttons(293,405,212,52, blue, white, 14, HowToPlayScreen)
+        highscore_button.buttons(293,469,212,52, blue, white, 14, HighscoreScreen)
+        settings_button.buttons(760, 0, 40, 38, blue, white, 14, SettingsScreen)
 
         star1.move()
         star3.move()
@@ -285,11 +286,11 @@ def menu_screen():
         fps.tick(60)
 
 #Displays the paused screen
-def paused_screen():
+def PausedScreen():
     pygame.time.delay(100)
     paused = True
     screen = DisplayScreen(paused_screen_img)
-    star1 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'up',12)
+    star1 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
     star2 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
     star3 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
     star4 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
@@ -317,7 +318,7 @@ def paused_screen():
         fps.tick(60)
 
 #Displays the how to play screen
-def how_to_play_screen():
+def HowToPlayScreen():
     pygame.time.delay(100)
     how_to_play = True
     screen = DisplayScreen(how_to_screen)
@@ -329,7 +330,7 @@ def how_to_play_screen():
     star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
 
     back_button = DisplayText('',black,14)
-    settings_button = DisplayText('',black,14)
+    settings = DisplayText('',black,14)
 
     while how_to_play:
         for event in pygame.event.get():
@@ -337,12 +338,8 @@ def how_to_play_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
-
         screen.show()
-
-
-        back_button.buttons( 0, 0, 40, 38, blue, white,14,menu_screen)
+        back_button.buttons( 0, 0, 40, 38, blue, white,14,MenuScreen)
         gameDisplay.blit(back_icon,(10,10))
         star1.move()
         star3.move()
@@ -351,25 +348,27 @@ def how_to_play_screen():
         star5.move()
         star6.move()
 
-        settings_button.buttons(760, 0, 40, 38, blue, white,14, settings)
+        settings.buttons(760, 0, 40, 38, blue, white,14, SettingsScreen)
         gameDisplay.blit(settings_icon,(772,10))
         pygame.display.update()
         fps.tick(60)
 
 #Displays the gender screen
 
-def gender_screen():
+def GenderScreen():
     pygame.time.delay(100)
     gender = True
-    star_X = random.randrange(0,display_width)
-    star_Y = - 349
-    star_width = 2
-    star_height = 20
-
-    star_X2 = random.randrange(0,display_width)
-    star_Y2 = - 500
-    star_width2 = 3
-    star_height2 = 19
+    star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
+    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'up',21)
+    star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
+    star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
+    star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
+    star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
+    screen = DisplayScreen(gender_screen)
+    male = DisplayText('MALE',black,15)
+    female = DisplayText('FEMALE',black,15)
+    back = DisplayText('',blue,15)
+    settings = DisplayText('',blue,15)
 
     while gender:
         for event in pygame.event.get():
@@ -378,33 +377,27 @@ def gender_screen():
                 pygame.quit()
                 quit()
 
-        display_screen(gender_select,0,0)
-        star(star_X,star_Y,star_width,star_height,blue)
-        star(star_X2,star_Y2,star_width2,star_height2,pink)
+        screen.show()
+        star1.move()
+        star2.move()
+        star3.move()
+        star4.move()
+        star5.move()
+        star6.move()
 
-        star_Y += 35
-        star_Y2 += 35
-
-        if star_Y > display_height:
-            star_Y = -50
-            star_X = random.randrange(0,display_width)
-        if star_Y2 > display_height:
-            star_Y2 = -150
-            star_X2 = random.randrange(0,display_width)
-
-        buttons('MALE', 126, 300, 203, 64, blue, white, 15, character_male)
-        buttons('FEMALE', 494, 300, 203, 64, blue, white, 15,character_female)
-        buttons('', 0, 0, 40, 38, blue, white,14, main_menu)
+        male.buttons(126,300,203,64,blue,white,15,CharMaleScreen)
+        female.buttons(494, 300, 203, 64,blue,white,15,CharMaleScreen)
+        back.buttons(0, 0, 40, 38, blue, white,14, MenuScreen)
         gameDisplay.blit(back_icon,(10,10))
 
-        buttons('', 760, 0, 40, 38, blue, white,14, settings)
+        settings.buttons(760, 0, 40, 38, blue, white,14, settings)
         gameDisplay.blit(settings_icon,(772,10))
         pygame.display.update()
         fps.tick(60)
 
 #Displays the name selection screen
 
-def name_selection_screen():
+def NameScreen():
     pygame.time.delay(50)
     display_screen(name_screen,0,0)
     buttons('', 0, 0, 40, 38, blue, white,14, main_menu)
@@ -417,51 +410,48 @@ def name_selection_screen():
     pygame.display.update()
 
 #Displays the character male screen
-def character_male_screen():
+def CharMaleScreen():
     pygame.time.delay(100)
     selection = True
-    star_X = random.randrange(0,display_width)
-    star_Y = - 349
-    star_width = 2
-    star_height = 20
-
-    star_X2 = random.randrange(0,display_width)
-    star_Y2 = - 500
-    star_width2 = 1
-    star_height2 = 19
+    star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
+    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'up',21)
+    star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
+    star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
+    star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
+    star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
+    screen = DisplayScreen(character_maleimg)
+    choice1 = DisplayText('CHOOSE ME',black,12)
+    choice2 = DisplayText('CHOOSE ME',black,12)
+    choice3 = DisplayText('CHOOSE ME',black,12)
+    back = DisplayText('',black,12)
+    settings = DisplayText('',black,12)
     while selection:
         for event in pygame.event.get():
             print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        display_screen(character_maleimg,0,0)
-        star(star_X,star_Y,star_width,star_height,blue)
-        star(star_X2,star_Y2,star_width2,star_height2,blue)
+        screen.show()
+        star1.move()
+        star2.move()
+        star3.move()
+        star4.move()
+        star5.move()
+        star6.move()
 
-        star_Y += 35
-        star_Y2 += 35
-
-        if star_Y > display_height:
-            star_Y = -50
-            star_X = random.randrange(0,display_width)
-        if star_Y2 > display_height:
-            star_Y2 = -150
-            star_X2 = random.randrange(0,display_width)
-
-        buttons('CHOOSE ME', 127, 357, 134, 36, blue, dark_blue, 12, char_1)
-        buttons('CHOOSE ME', 333, 359, 134, 36, blue, dark_blue, 12, char_2)
-        buttons('CHOOSE ME', 539, 357, 134, 36, blue, dark_blue, 12, char_3)
-        buttons('', 0, 0, 40, 38, blue, white,14, gender_screen)
+        choice1.buttons(127, 357, 134, 36, blue, dark_blue, 12, char_1)
+        choice2.buttons(333, 359, 134, 36, blue, dark_blue, 12, char_2)
+        choice3.buttons(539, 357, 134, 36, blue, dark_blue, 12, char_3)
+        back.buttons(0, 0, 40, 38, blue, white,14, GenderScreen)
         gameDisplay.blit(back_icon,(10,10))
 
-        buttons('', 760, 0, 40, 38, blue, white,14, settings)
+        settings.buttons(760, 0, 40, 38, blue, white,14, SettingsScreen)
         gameDisplay.blit(settings_icon,(772,10))
         pygame.display.update()
         fps.tick(60)
 
 #Displays the character_female screen
-def character_female_screen():
+def CharFemaleScreen():
     pygame.time.delay(100)
     selection = True
     star_X = random.randrange(0,display_width)
@@ -505,7 +495,7 @@ def character_female_screen():
         fps.tick(60)
 
 #Displays the high score screen
-def highscore_select():
+def HighscoreScreen():
     temp_image = None
     file = open('highscores.txt','r')
     for line in file:
@@ -609,7 +599,7 @@ def spaceship(spaceship,x,y):
 
 #Displays the settings screen
 
-def settings():
+def SettingsScreen():
     global run_settings
     run_settings = True
     star_X = random.randrange(0,display_width)
@@ -1029,6 +1019,6 @@ def game():
 
 
 menu_music.play(-1)
-main_menu()
+MenuScreen()
 pygame.quit()
 quit()
