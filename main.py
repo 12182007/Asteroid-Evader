@@ -38,7 +38,7 @@ dashboard = pygame.image.load('screens/dashboard.png')
 name_screen = pygame.image.load('screens/name_select.png')
 settings_screen = pygame.image.load('screens/settings.png')
 gameover_screen = pygame.image.load('screens/Game_screen.png')
-paused_screen = pygame.image.load('screens/Paused_screen.png')
+paused_screen_img = pygame.image.load('screens/Paused_screen.png')
 
 #list of spaceships to choose from
 spaceship1 = pygame.image.load('assets/spaceships/ship1.png')
@@ -253,7 +253,7 @@ star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
 star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
 
 #Function displays main menu screen.
-def main_menu():
+def menu_screen():
     pygame.time.delay(100)
     menu = True
     start_game_button = DisplayText('Start Game',black,14)
@@ -285,11 +285,18 @@ def main_menu():
         fps.tick(60)
 
 #Displays the paused screen
-def pausedd():
+def paused_screen():
     pygame.time.delay(100)
-    global paused
     paused = True
-    screen = paused_screen
+    screen = DisplayScreen(paused_screen_img)
+    star1 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'up',12)
+    star2 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
+    star3 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
+    star4 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
+    star5 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
+    star6 = Stars(random.randrange(0,(display_width - 1)),-900,1,21,dark_blue,'down',12)
+    resume = DisplayText('',blue,14)
+
     while paused:
         for event in pygame.event.get():
             print(event)
@@ -297,13 +304,20 @@ def pausedd():
                 pygame.quit()
                 quit()
         screen.show()
+        star1.move()
+        star2.move()
+        star3.move()
+        star4.move()
+        star5.move()
+        star6.move()
 
-        buttons('Resume Game', 293, 340, 212, 52, blue, white,14, unpause)
+
+        resume.buttons(293,340,212,52,blue,white,resume.text,unpause)
         pygame.display.update()
-        fps.tick(15)
+        fps.tick(60)
 
 #Displays the how to play screen
-def how_play():
+def how_to_play_screen():
     pygame.time.delay(100)
     how_to_play = True
     screen = DisplayScreen(how_to_screen)
@@ -328,7 +342,7 @@ def how_play():
         screen.show()
 
 
-        back_button.buttons( 0, 0, 40, 38, blue, white,14,main_menu)
+        back_button.buttons( 0, 0, 40, 38, blue, white,14,menu_screen)
         gameDisplay.blit(back_icon,(10,10))
         star1.move()
         star3.move()
@@ -390,7 +404,7 @@ def gender_screen():
 
 #Displays the name selection screen
 
-def name_selection():
+def name_selection_screen():
     pygame.time.delay(50)
     display_screen(name_screen,0,0)
     buttons('', 0, 0, 40, 38, blue, white,14, main_menu)
@@ -403,7 +417,7 @@ def name_selection():
     pygame.display.update()
 
 #Displays the character male screen
-def character_male():
+def character_male_screen():
     pygame.time.delay(100)
     selection = True
     star_X = random.randrange(0,display_width)
@@ -447,7 +461,7 @@ def character_male():
         fps.tick(60)
 
 #Displays the character_female screen
-def character_female():
+def character_female_screen():
     pygame.time.delay(100)
     selection = True
     star_X = random.randrange(0,display_width)
