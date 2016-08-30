@@ -398,12 +398,17 @@ def GenderScreen():
 #Displays the name selection screen
 
 def NameScreen():
+    selection = False
     pygame.time.delay(50)
-    display_screen(name_screen,0,0)
-    buttons('', 0, 0, 40, 38, blue, white,14, main_menu)
+    DisplayScreen(name_screen)
+    back = DisplayText('blue',blue,14)
+    settings = DisplayText('',blue,14)
+
+    back.buttons(0, 0, 40, 38, blue, white,14, MenuScreen)
+
     gameDisplay.blit(back_icon,(10,10))
 
-    buttons('', 760, 0, 40, 38, blue, white,14, settings)
+    settings.buttons(760, 0, 40, 38, blue, white,14, settings)
     gameDisplay.blit(settings_icon,(772,10))
     global username
     username = inputbox.ask(gameDisplay, '')
@@ -515,15 +520,15 @@ def HighscoreScreen():
     pygame.time.delay(100)
     global running
     running = True
-    star_X = random.randrange(0,display_width)
-    star_Y = - 349
-    star_width = 2
-    star_height = 20
-
-    star_X2 = random.randrange(0,display_width)
-    star_Y2 = - 500
-    star_width2 = 1
-    star_height2 = 19
+    star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
+    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'down',21)
+    star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
+    star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
+    star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
+    star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
+    screen = DisplayScreen(highscore_screen)
+    back = DisplayText('',black,14)
+    settings = DisplayText('',black,14)
 
     while running:
         for event in pygame.event.get():
@@ -532,21 +537,18 @@ def HighscoreScreen():
                 pygame.quit()
                 quit()
 
-        display_screen(highscore_screen,0,0)
-        star(star_X,star_Y,star_width,star_height,blue)
-        star(star_X2,star_Y2,star_width2,star_height2,blue)
-        star_Y += 35
-        star_Y2 += 35
-        if star_Y > display_height:
-            star_Y = -50
-            star_X = random.randrange(0,display_width)
-        if star_Y2 > display_height:
-            star_Y2 = -150
-            star_X2 = random.randrange(0,display_width)
+        screen.show()
+        star1.move()
+        star2.move()
+        star3.move()
+        star4.move()
+        star5.move()
+        star6.move()
 
-        buttons('', 0, 0, 40, 38, blue, white,14, not_highscore)
+
+        back.buttons(0, 0, 40, 38, blue, white,14, not_highscore)
         gameDisplay.blit(back_icon,(10,10))
-        buttons('', 760, 0, 40, 38, blue, white,14, settings)
+        settings.buttons(760, 0, 40, 38, blue, white,14, settings)
         gameDisplay.blit(settings_icon,(772,10))
         gameDisplay.blit(temp_image,(550,401))
         pygame.display.update()
@@ -558,37 +560,37 @@ def char_1():
     global current_charnum
     current_charnum = 1
     character_img = character_1
-    game()
+    NameScreen()
 def char_2():
     global character_img
     global current_charnum
     current_charnum = 2
     character_img = character_2
-    game()
+    NameScreen()
 def char_3():
     global character_img
     global current_charnum
     current_charnum = 3
     character_img = character_3
-    game()
+    NameScreen()
 def char_4():
     global character_img
     global current_charnum
     current_charnum = 4
     character_img = character_4
-    game()
+    NameScreen()
 def char_5():
     global character_img
     global current_charnum
     current_charnum = 5
     character_img = character_5
-    game()
+    NameScreen()
 def char_6():
     global character_img
     global current_charnum
     current_charnum = 6
     character_img = character_6
-    game()
+    NameScreen()
 
 #Displays the soaceship
 def spaceship(spaceship,x,y):
@@ -641,14 +643,14 @@ def SettingsScreen():
 def game_over():
     file = open('highscores.txt', 'a')
     file.write( str(current_charnum)  + ' ' + username + ' ' + str(score))
-    star_X = random.randrange(0,display_width)
-    star_Y = - 349
-    star_width = 2
-    star_height = 20
-    star_X2 = random.randrange(0,display_width)
-    star_Y2 = - 500
-    star_width2 = 1
-    star_height2 = 19
+    star1 = Stars(random.randrange(0,display_width),-430, 2,20,blue, 'down',19)
+    star2 = Stars(random.randrange(0,display_width),-345, 2,20,blue, 'down',21)
+    star3 = Stars(random.randrange(0,display_width),-452, 2,20,blue, 'down',8)
+    star4 = Stars(random.randrange(0,display_width),-542, 2,27,blue, 'down',12)
+    star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
+    star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
+    screen = DisplayScreen(gameover_screen)
+    back = DisplayText('Back To Main Menu',blue,white)
     game_over = True
     intro_music.stop()
     menu_music.stop()
@@ -659,19 +661,15 @@ def game_over():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        display_screen(gameover_screen,0,0)
-        star(star_X,star_Y,star_width,star_height,blue)
-        star(star_X2,star_Y2,star_width2,star_height2,blue)
-        star_Y += 35
-        star_Y2 += 35
-        if star_Y > display_height:
-            star_Y = -50
-            star_X = random.randrange(0,display_width)
-        if star_Y2 > display_height:
-            star_Y2 = -150
-            star_X2 = random.randrange(0,display_width)
+        screen.show()
+        star1.move()
+        star2.move()
+        star3.move()
+        star4.move()
+        star5.move()
+        star6.move()
 
-        buttons('Back To Main Menu', 295, 383, 212, 52, blue, white,14, main_menu)
+        back.buttons(295, 383, 212, 52, blue, white,14, MenuScreen)
         pygame.display.update()
         fps.tick(60)
 
@@ -733,7 +731,7 @@ def character(image,name,health,color):
 #executes the actual game function
 def game():
     # initiates the name selection function after the game begins
-    name_selection()
+    NameScreen()
     menu_music.stop()
     game_music.play(-1)
 
@@ -846,7 +844,7 @@ def game():
 
 
         #Displays the gaming screen (background)
-        display_screen(gaming_screen, x,y)
+        DisplayScreen(gaming_screen)
 
         #Detects whether spaceship collided with border
         if x > display_width - 32:
