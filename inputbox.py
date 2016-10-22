@@ -21,19 +21,21 @@ def display_box(screen, message):
   if len(message) != 0:
     screen.blit(fontobject.render(message, 1, (0,0,0)),
                 ((screen.get_width() / 2) - 140, (screen.get_height() / 2) - 37))
-  pygame.display.flip()
+  pygame.display.update()
+
 
 def ask(screen, question):
   "ask(screen, question) -> answer"
   pygame.font.init()
   current_string = []
   display_box(screen, question + " " + "".join(current_string))
+  name = None
   while 1:
     inkey = get_key()
     if inkey == K_BACKSPACE:
       current_string = current_string[0:-1]
     elif inkey == K_RETURN:
-        return ("").join(current_string)
+      return ("").join(current_string)
     elif inkey == K_MINUS:
       current_string.append("_")
     elif inkey <= 127:
@@ -41,6 +43,7 @@ def ask(screen, question):
 
     display_box(screen, question + "".join(current_string))
     name = ("").join(current_string)
+
   return name[0].upper() + name[1:]
 
 def main():
