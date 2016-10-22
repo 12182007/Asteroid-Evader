@@ -27,15 +27,15 @@ background = background.convert()
 
 # Backgrounds & Game Screen
 intro_screen = pygame.image.load('screens/intro_screen.jpg')
-menu_screen = pygame.image.load('screens/menu_screen.png')
-how_to_screen = pygame.image.load('screens/how_to_play.png')
-gaming_screen = pygame.image.load('screens/gaming_screen.png')
-gender_screen = pygame.image.load('screens/gender_select.png')
-character_maleimg = pygame.image.load('screens/character_male.png')
-character_femaleimg = pygame.image.load('screens/character_female.png')
+menu_screen = pygame.image.load('screens/main_menu_screen.png')
+how_to_screen = pygame.image.load('screens/how_to_play_screen.png')
+gaming_screen = pygame.image.load('screens/game_screen.png')
+gender_screen = pygame.image.load('screens/gender_screen.png')
+character_maleimg = pygame.image.load('screens/male_screen.png')
+character_femaleimg = pygame.image.load('screens/female_screen.png')
 dashboard = pygame.image.load('screens/dashboard.png')
-name_screen = pygame.image.load('screens/name_select.png')
-gameover_screen = pygame.image.load('screens/Game_screen.png')
+name_screen = pygame.image.load('screens/name_screen.png')
+gameover_screen = pygame.image.load('screens/game_over.png')
 paused_screen_img = pygame.image.load('screens/Paused_screen.png')
 
 #list of spaceships to choose from
@@ -162,15 +162,47 @@ class DisplayText(object):
         else:
             pygame.draw.rect(gameDisplay, inactive, (x,y,width,height))
 
-        buttonText = pygame.font.Font('fonts/Montserrat-Hairline.otf', text_size)
+        buttonText = pygame.font.Font('fonts/Montserrat-Hairline.otf', 15)
         textSurf, textRect = DisplayText.texts(self,self.text,buttonText)
         textRect.center = ( (x+(width/2)) , (y +(height/2)) )
         gameDisplay.blit(textSurf, textRect)
 
 
 #This class is used to load actors which you can't control into screens into screen
+class Player(pygame.sprite.Sprite):
+    def __init__(self, image):
+        self.image = image.convert_alpha()
+        self.x = random.randrange(0,display_width)
+        self.y = 400
+        self.width = 32
+        self.height = 32
+
+    #This method is used for moving actors
+    def show(self):
+        gameDisplay.blit(self.image, (self.x, self.y))
+
+    def move(self,direction):
+        if direction == 'down':
+            self.y += 25
+            if self.y > display_height:
+                self.y = 0
+        if direction == 'up':
+            self.y -= 25
+            if self.y < display_height:
+                self.y = 600 + self.height
+        if direction == 'right':
+            self.x += 25
+            if self.x >= (display_width + self.width):
+                self.x = 0
+        if direction == 'left':
+            self.x -= 25
+            if self.x < display_width:
+                print('X is smaller')
+                self.x = 0 + self.width
+
+
 class NonActor(pygame.sprite.Sprite):
-    def __init__(self, image, x,y,width,height,direction,speed):
+    def __init__(self, image, x, y, width, height, direction, speed):
         super(NonActor, self).__init__()
         self.image = image.convert_alpha()
         self.x = x
@@ -180,9 +212,9 @@ class NonActor(pygame.sprite.Sprite):
         self.direction = direction
         self.speed = speed
 
-    #This method is used for moving actors
+    # This method is used for moving actors
     def move(self):
-        gameDisplay.blit(self.image,(self.x,self.y))
+        gameDisplay.blit(self.image, (self.x, self.y))
         if self.direction == 'down':
             self.y += self.speed
             if self.y > display_height:
@@ -200,7 +232,6 @@ class NonActor(pygame.sprite.Sprite):
             if self.x < display_width:
                 print('X is smaller')
                 self.x = 0 + self.width
-
 
 #Same as above
 class Stars(pygame.sprite.Sprite):
@@ -275,9 +306,11 @@ def MenuScreen():
 #Displays the paused screen
 def PausedScreen():
     pygame.time.delay(100)
+    global paused
     paused = True
     screen = DisplayScreen(paused_screen_img)
-    resume = DisplayText('',blue,14)
+    resume = DisplayText('RESUME',black,14)
+    end = DisplayText('END', black, 14)
 
     while paused:
         for event in pygame.event.get():
@@ -288,13 +321,9 @@ def PausedScreen():
         screen.show()
         star1.move()
         star2.move()
-        star3.move()
-        star4.move()
-        star5.move()
-        star6.move()
 
-
-        resume.buttons(293,340,212,52,blue,white,resume.text,unpause)
+        resume.buttons(293, 340, 212, 52, blue, white, 14, unpause)
+        end.buttons(293, 469, 212, 52, blue, white, 14, quit)
         pygame.display.update()
         fps.tick(60)
 
@@ -469,10 +498,7 @@ def char_6():
 
 
 #Displays the soaceship
-def spaceship(spaceship,x,y):
-    height = 32
-    width = 32
-    gameDisplay.blit(spaceship,(x,y),(random.randrange(0,4) * width, 0, width, height))
+
 
 
 
@@ -553,7 +579,10 @@ def character(image,name,health,color):
     gameDisplay.blit(text2,(255,9))
     gameDisplay.blit(image.convert_alpha(),(10,4))
 
-
+def spaceship(spaceship,x,y):
+    height = 32
+    width = 32
+    gameDisplay.blit(spaceship,(x,y),(random.randrange(0,4) * width, 0, width, height))
 
 #executes the actual game function
 def game():
@@ -562,20 +591,17 @@ def game():
     menu_music.stop()
     game_music.play(-1)
 
-    #sets the x coordinates and y coordinates for the spaceship
+    EXIT = False #checks to see if exit button has been pressed
+    begin = False #checks to see if the game has begun
+    paused = False #checks to see if the game has been paused
+
+    score = 0
+
     x = 384
     y = (display_height * 0.8)
 
     x_change = 0
     y_change = 0
-
-    #condition loops
-    EXIT = False #checks to see if exit button has been pressed
-    begin = False #checks to see if the game has begun
-    paused = False #checks to see if the game has been paused
-
-    #current score
-    score = 0
 
     #Mine - First obstacle
     mine1_x = random.randrange(0,display_width)
@@ -607,6 +633,8 @@ def game():
     speed_x = random.randrange(0, display_width)
     speed_y = random.randrange(3000, 10000)
 
+    player = Player(spaceship2)
+
     while not EXIT:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -621,11 +649,11 @@ def game():
                     y_change = -5
                 if event.key == pygame.K_s or event.key == pygame.K_DOWN:
                     y_change = 5
-                if event.key == pygame.K_p:
-                    paused()
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     quit()
+                if event.key == pygame.K_p:
+                    PausedScreen()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a or event.key == pygame.K_d or event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     x_change = 0
@@ -633,102 +661,148 @@ def game():
                     y_change = 0
 
 
+
         # Moves spaceship by the value of  x_ or y_ change dependent on what was de
         x += x_change
         y += y_change
 
-        #Moves spaceship once that game screen is displayed, shows the users that spaceships are movable
+        # Moves spaceship once that game screen is displayed, shows the users that spaceships are movable
         if begin == False:
             y -= 1
             if y < 400:
                 y += y_change
                 begin = True
 
-
-        #Displays the gaming screen (background)
+        # Displays the gaming screen (background)
         DisplayScreen(gaming_screen).show()
 
-        #Detects whether spaceship collided with border
+        # Detects whether spaceship collided with border
         if x > display_width - 32:
-            x_change = 0
+            x_change = -3
         if x < 0:
-            x_change = 0
+            x_change = 3
         if y > display_height - 64:
-            y_change = 0
+            y_change = -3
         if y < 90:
-            y_change = 0
+            y_change = 3
 
-        #Detects if the first obstacle as crashed with the spaceship
+        # Detects if the first obstacle as crashed with the spaceship
         if y < mine1_y + 48 and y > mine1_y - 48:
-            print ('Ship has crossed the Mines In Y')
+            print('Ship has crossed the Mines In Y')
             if x > mine1_x and x < mine1_x + 48 or x + 32 > mine1_x and x + 32 < mine1_x + 32:
                 crashed.play()
                 mine1_y = - 900
-                mine1_x = random.randrange(0,display_width)
+                mine1_x = random.randrange(0, display_width)
                 mine1_speed += 0.5
                 mine1_y += mine1_speed
                 score -= 15
                 health = health - 3
 
-        #Detects if the second obstacle as crashed with the spaceship
+        # Detects if the second obstacle as crashed with the spaceship
         if y < mine2_y + 48 and y > mine2_y - 48:
-            print ('Ship has crossed the Mines In Y')
+            print('Ship has crossed the Mines In Y')
             if x > mine2_x and x < mine2_x + 48 or x + 32 > mine2_x and x + 32 < mine2_x + 32:
                 crashed.play()
                 mine2_y = - 900
-                mine2_x = random.randrange(0,display_width)
+                mine2_x = random.randrange(0, display_width)
                 mine2_speed += 0.5
                 mine2_y += mine2_speed
                 score -= 25
                 health = health - 5
 
-        #Detects if the third obstacle as crashed with the spaceship
+        # Detects if the third obstacle as crashed with the spaceship
         if y < mine3_y + 48 and y > mine3_y - 48:
-            print ('Ship has crossed the Mines In Y')
+            print('Ship has crossed the Mines In Y')
             if x > mine3_x and x < mine3_x + 48 or x + 32 > mine3_x and x + 32 < mine3_x + 32:
                 crashed.play()
                 mine3_y = - 900
-                mine3_x = random.randrange(0,display_width)
+                mine3_x = random.randrange(0, display_width)
                 mine3_speed += 0.5
                 mine3_y += mine3_speed
                 score += 5
                 health = health - 1
-        #Displays the spacehip onto the screen
-        spaceship(spaceship2,x,y)
 
+        # Displays the spacehip onto the screen
+        spaceship(spaceship2, x, y)
 
+        obstacle(mine1, mine1_x, mine1_y)  # creates first obstacle
+        obstacle(mine2, mine2_x, mine2_y)  # creates second obstacle
+        obstacle(mine3, mine3_x, mine3_y)  # creates third obstacle
 
-        obstacle(mine1,mine1_x,mine1_y) #creates first obstacle
-        obstacle(mine2,mine2_x,mine2_y)#creates second obstacle
-        obstacle(mine3,mine3_x,mine3_y)#creates third obstacle
-
-        mine1_y += mine1_speed # Moves first obstacle
-        mine2_y += mine2_speed # Moves second obstacle
-        mine3_y += mine3_speed # Moves third obstacle
+        mine1_y += mine1_speed  # Moves first obstacle
+        mine2_y += mine2_speed  # Moves second obstacle
+        mine3_y += mine3_speed  # Moves third obstacle
 
         # checks to see if any of the three obstacles are greater than the display
         # height, if they are then they are position to the top of the screen'
         if mine1_y > display_height:
             mine1_y = - 900
-            mine1_x = random.randrange(0,display_width)
+            mine1_x = random.randrange(0, display_width)
             mine1_speed += 0.2
             mine1_y += mine1_speed
             score += 15
 
-
         if mine2_y > display_height:
             mine2_y = - 500
-            mine2_x = random.randrange(0,display_width)
+            mine2_x = random.randrange(0, display_width)
             mine2_speed += 0.2
             mine2_y += mine2_speed
             score += 15
 
         if mine3_y > display_height:
             mine3_y = - 500
-            mine3_x = random.randrange(0,display_width)
+            mine3_x = random.randrange(0, display_width)
             mine3_speed += 0.2
             mine3_y += mine3_speed
             score += 15
+
+        star1.move()
+        star2.move()
+        star3.move()
+        star4.move()
+        star5.move()
+
+        if score >= 500:
+            obstacle(asteroid, asteroid_X, asteroid_Y)  # Creates asteroid
+            asteroid_X -= 6
+            # the line below checks to see if the y coordinates of the spaceship and
+            # asteroid has crossed
+            if y < asteroid_Y + 114 and y > asteroid_Y - 114:
+                # checks to see if the x cooridinates of the spaceship and asteroid are crossed
+                if x > asteroid_X and x < asteroid_X + 42 or x + 32 > asteroid_X and x + 32 < asteroid_X + 32:
+                    crashed.play()  # plays crashed sound
+                    asteroid_X = random.randint(display_width, 1000)
+                    asteroid_Y = random.randrange(0, display_height - 133)
+                    health = health - 25
+            elif asteroid_X <= 0 - 133:
+                asteroid_X = random.randint(display_width, 1000)  # resets x position of asteroid
+                asteroid_Y = random.randrange(0, display_height - 133)  # resets y position of asteroid
+
+        obstacle(health_powerup, health_x, health_y)  # creates health powerup
+        health_y += 5  # moves health down by 5 pixels
+
+        # checks to see if and y coordinate of spaceship and powerup are crossed
+        if y < health_y + 42 and y > health_y - 42:
+            if x > health_x and x < health_x + 42 or x + 32 > health_x and x + 32 < health_x + 32:
+                powerup.play()  # plays powerup sound
+                health_y = random.randrange(5000, 10000)  # resets position of health_y
+                health_y = health_y * -1  # Makes it negative so it's at the top
+                health_x = random.randrange(0, display_width - 32)  # places health_x in a new location
+                health = health + 25  # increases health
+                if health > 100:  # makes sure that health never goes above 0
+                    health = 100
+
+        obstacle(speed_powerup, speed_x, speed_y)  # creates speed powerup
+        speed_y += 5  # moves speed powerup down by 5 pixels
+
+        # checks to see if and y coordinate of spaceship and powerup are crossed
+        if y < speed_y + 42 and y > speed_y - 42:
+            if x > speed_x and x < speed_x + 42 or x + 32 > speed_x and x + 32 < speed_x + 32:
+                powerup.play()  # plays powerup sound
+                speed_y = random.randrange(5000, 10000)  # resets position of speed_y
+                speed_y = health_y * -1  # Makes it negative so it's at the top
+                speed_x = random.randrange(0, display_width - 42)  # places speed_x i n a new location
+                x_change += 5  # speeds up spaceship by 5 pixels
 
 
         star1.move()
@@ -737,49 +811,6 @@ def game():
         star4.move()
         star5.move()
 
-        #if yes then a new obstacle is introduced... The asteroid.
-        if score >= 500:
-           obstacle(asteroid,asteroid_X,asteroid_Y) # Creates asteroid
-           asteroid_X -= 6 # Asteroid is moved horizontally by 6pixels
-           #the line below checks to see if the y coordinates of the spaceship and
-           #asteroid has crossed
-           if y < asteroid_Y + 114 and y > asteroid_Y - 114:
-                #checks to see if the x cooridinates of the spaceship and asteroid are crossed
-               if x > asteroid_X and x < asteroid_X + 42 or x + 32 > asteroid_X and x + 32 < asteroid_X + 32:
-                    crashed.play() #plays crashed sound
-                    asteroid_X = random.randint(display_width,1000) #resets x position of  asteroid
-                    asteroid_Y = random.randrange(0,display_height-133) #resets y position of asteroid
-                    health = health - 25 # decreases health
-           elif asteroid_X <= 0 - 133: # checks to see if asteroid made it to other side of the screen
-            asteroid_X = random.randint(display_width,1000) # resets x position of asteroid
-            asteroid_Y = random.randrange(0,display_height-133)# resets y position of asteroid
-
-
-        obstacle(health_powerup,health_x,health_y) # creates health powerup
-        health_y += 5  #moves health down by 5 pixels
-
-        #checks to see if and y coordinate of spaceship and powerup are crossed
-        if y < health_y + 42 and y > health_y - 42:
-            if x > health_x and x < health_x + 42 or x + 32 > health_x and x + 32 < health_x + 32:
-                powerup.play() #plays powerup sound
-                health_y = random.randrange(5000, 10000) #resets position of health_y
-                health_y = health_y * -1 #Makes it negative so it's at the top
-                health_x = random.randrange(0,display_width-32) #places health_x in a new location
-                health = health + 25 #increases health
-                if health > 100: # makes sure that health never goes above 0
-                    health = 100
-
-        obstacle(speed_powerup,speed_x,speed_y) #creates speed powerup
-        speed_y += 5 #moves speed powerup down by 5 pixels
-
-        #checks to see if and y coordinate of spaceship and powerup are crossed
-        if y < speed_y + 42 and y > speed_y - 42:
-            if x > speed_x and x < speed_x + 42 or x + 32 > speed_x and x + 32 < speed_x + 32:
-                powerup.play() #plays powerup sound
-                speed_y = random.randrange(5000, 10000) #resets position of speed_y
-                speed_y = health_y * -1 #Makes it negative so it's at the top
-                speed_x = random.randrange(0, display_width - 42) #places speed_x i n a new location
-                x_change += 5 #speeds up spaceship by 5 pixels
 
         gameDisplay.blit(dashboard,(0,0)) # displays dashboard at the top of the screen
 
@@ -796,9 +827,7 @@ def game():
         fps.tick(60)
 
 
-
-
 menu_music.play(-1)
-game_over()
+MenuScreen()
 pygame.quit()
 quit()
