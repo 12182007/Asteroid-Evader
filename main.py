@@ -26,7 +26,7 @@ background = pygame.Surface(gameDisplay.get_size())
 background = background.convert()
 
 # Backgrounds & Game Screen
-intro_screen = pygame.image.load('screens/intro_screen.jpg')
+intro_screen = pygame.image.load('screens/intro_screen.png')
 menu_screen = pygame.image.load('screens/main_menu_screen.png')
 how_to_screen = pygame.image.load('screens/how_to_play_screen.png')
 gaming_screen = pygame.image.load('screens/game_screen.png')
@@ -39,7 +39,6 @@ gameover_screen = pygame.image.load('screens/game_over.png')
 paused_screen_img = pygame.image.load('screens/Paused_screen.png')
 
 #list of spaceships to choose from
-spaceship1 = pygame.image.load('assets/spaceships/ship1.png')
 spaceship2 = pygame.image.load('assets/spaceships/ship2.png')
 spaceship3 = pygame.image.load('assets/spaceships/ship3.png')
 spaceship4 = pygame.image.load('assets/spaceships/ship4.png')
@@ -197,7 +196,6 @@ class Player(pygame.sprite.Sprite):
         if direction == 'left':
             self.x -= 25
             if self.x < display_width:
-                print('X is smaller')
                 self.x = 0 + self.width
 
 
@@ -230,7 +228,6 @@ class NonActor(pygame.sprite.Sprite):
         if self.direction == 'left':
             self.x -= self.speed
             if self.x < display_width:
-                print('X is smaller')
                 self.x = 0 + self.width
 
 #Same as above
@@ -282,17 +279,15 @@ def MenuScreen():
     how_to_play = DisplayText('HOW TO PLAY', black, 14)
     screen = DisplayScreen(menu_screen)
 
-
     while menu:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
         screen.show()
         start_game_button.buttons(293,340,212,52, blue, white, 14, GenderScreen)
         how_to_play.buttons(293,405,212,52, blue, white, 14, HowToPlayScreen)
-        end.buttons(293, 469, 212, 52, blue, white, 14, quit)
+        end.buttons(293, 469, 212, 52, blue, white, 14, end_game)
 
         star1.move()
         star3.move()
@@ -314,7 +309,6 @@ def PausedScreen():
 
     while paused:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -323,7 +317,7 @@ def PausedScreen():
         star2.move()
 
         resume.buttons(293, 340, 212, 52, blue, white, 14, unpause)
-        end.buttons(293, 469, 212, 52, blue, white, 14, quit)
+        end.buttons(293, 405, 212, 52, blue, white, 14, end_game)
         pygame.display.update()
         fps.tick(60)
 
@@ -337,7 +331,6 @@ def HowToPlayScreen():
 
     while how_to_play:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -366,7 +359,6 @@ def GenderScreen():
 
     while gender:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -415,7 +407,6 @@ def CharMaleScreen():
     back = DisplayText('',black,12)
     while selection:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -449,7 +440,6 @@ def CharFemaleScreen():
 
     while selection:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -503,19 +493,22 @@ def char_6():
 
 
 def game_over():
+    menu_music.play(-1)
+
     screen = DisplayScreen(gameover_screen)
     back = DisplayText('Back To Main Menu',black,blue)
     game_over = True
+    final_score = DisplayText(str(score),black,blue)
     intro_music.stop()
     menu_music.stop()
     game_music.stop()
     while game_over:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
         screen.show()
+
         star1.move()
         star2.move()
         star3.move()
@@ -523,6 +516,7 @@ def game_over():
         star5.move()
         star6.move()
 
+        final_score.buttons(200, 230, 400, 70, blue, blue, 80)
         back.buttons(295, 383, 212, 52, blue, white,14, MenuScreen)
         pygame.display.update()
         fps.tick(60)
@@ -584,6 +578,9 @@ def spaceship(spaceship,x,y):
     width = 32
     gameDisplay.blit(spaceship,(x,y),(random.randrange(0,4) * width, 0, width, height))
 
+def end_game():
+    pygame.quit()
+    quit()
 #executes the actual game function
 def game():
     # initiates the name selection function after the game begins
@@ -594,7 +591,7 @@ def game():
     EXIT = False #checks to see if exit button has been pressed
     begin = False #checks to see if the game has begun
     paused = False #checks to see if the game has been paused
-
+    global score
     score = 0
 
     x = 384
@@ -688,7 +685,6 @@ def game():
 
         # Detects if the first obstacle as crashed with the spaceship
         if y < mine1_y + 48 and y > mine1_y - 48:
-            print('Ship has crossed the Mines In Y')
             if x > mine1_x and x < mine1_x + 48 or x + 32 > mine1_x and x + 32 < mine1_x + 32:
                 crashed.play()
                 mine1_y = - 900
@@ -700,7 +696,6 @@ def game():
 
         # Detects if the second obstacle as crashed with the spaceship
         if y < mine2_y + 48 and y > mine2_y - 48:
-            print('Ship has crossed the Mines In Y')
             if x > mine2_x and x < mine2_x + 48 or x + 32 > mine2_x and x + 32 < mine2_x + 32:
                 crashed.play()
                 mine2_y = - 900
@@ -712,7 +707,6 @@ def game():
 
         # Detects if the third obstacle as crashed with the spaceship
         if y < mine3_y + 48 and y > mine3_y - 48:
-            print('Ship has crossed the Mines In Y')
             if x > mine3_x and x < mine3_x + 48 or x + 32 > mine3_x and x + 32 < mine3_x + 32:
                 crashed.play()
                 mine3_y = - 900
@@ -826,8 +820,7 @@ def game():
         pygame.display.update()
         fps.tick(60)
 
-
 menu_music.play(-1)
-MenuScreen()
+game_over()
 pygame.quit()
 quit()
