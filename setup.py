@@ -5,11 +5,12 @@ Usage:
     python setup.py py2app
 """
 
+import macholib_patch
 from setuptools import setup
 
 APP = ['main.py']
 APP_NAME = "Asteroid Evader"
-DATA_FILES = [('', ['assets']),('', ['fonts']),('', ['fx']),('', ['music']),('', ['screens'])]
+DATA_FILES = [('', ['assets']),('', ['fonts']),('', ['fx']),('', ['music']),('', ['screens']),('', ['inputbox.py'])]
 OPTIONS = {
     'argv_emulation': True,
     'iconfile': 'icon.icns'

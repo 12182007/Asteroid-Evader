@@ -122,14 +122,16 @@ class DisplayScreen(object):
                 background.fill(black)
                 self.image.set_alpha(i)
                 gameDisplay.blit(self.image,(0,0))
-                pygame.display.flip()
+                pygame.display.update()
                 pygame.time.delay(time)
+                fps.tick(60)
             for i in range(255):
                 background.fill(black)
                 background.set_alpha(i)
                 gameDisplay.blit(background,(0,0))
-                pygame.display.flip()
+                pygame.display.update()
                 pygame.time.delay(time)
+                fps.tick(60)
 
 #This class is used to display text onto the surface
 class DisplayText(object):
@@ -819,8 +821,8 @@ def game():
 
         pygame.display.update()
         fps.tick(60)
-
+DisplayScreen(intro_screen).fade(20)
 menu_music.play(-1)
-game_over()
+MenuScreen()
 pygame.quit()
 quit()
