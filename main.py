@@ -1,6 +1,7 @@
 import pygame
 import random
 import inputbox
+from pygame.locals import *
 pygame.init()
 
 # All Global Variables Are Declared Below This Line
@@ -21,7 +22,7 @@ gameDisplay = pygame.display.set_mode((display_width, display_height), pygame.HW
 pygame.display.set_caption('Asteroid Evader')
 #frames per second
 fps = pygame.time.Clock()
-background = pygame.Surface(gameDisplay.get_size())
+background = pygame.Surface(gameDisplay.get_size(),pygame.SRCALPHA, 32)
 #Convert to color maps
 background = background.convert()
 
@@ -88,6 +89,7 @@ how_to_play = False
 paused = False
 running = False
 
+fading_menu = True
 
 score = 0
 
@@ -105,33 +107,24 @@ def how_to_play_none():
 
 #This class is used to display different screens
 class DisplayScreen(object):
-    #converts image to picels
     def __init__(self, image):
         self.image = image.convert()
 
-    #this method only shows the screen
     def show(self):
         gameDisplay.blit(self.image,(0,0))
 
-    #This method fades the screen in and out
-    def fade(self,time):
-        self.time = time
-        fading = True
-        if fading:
-            for i in range(255):
-                background.fill(black)
-                self.image.set_alpha(i)
-                gameDisplay.blit(self.image,(0,0))
-                pygame.display.update()
-                pygame.time.delay(time)
-                fps.tick(60)
-            for i in range(255):
-                background.fill(black)
-                background.set_alpha(i)
-                gameDisplay.blit(background,(0,0))
-                pygame.display.update()
-                pygame.time.delay(time)
-                fps.tick(60)
+    def fadeIn(self,time,opacity):
+        background.fill(black)
+        self.image.set_alpha(opacity)
+        gameDisplay.blit(self.image, (0, 0))
+
+    def fadeOut(self, time, opacity):
+        background.fill(black)
+        gameDisplay.blit(self.image, (0, 0))
+        background.set_alpha(opacity)
+        gameDisplay.blit(background, (0, 0))
+
+
 
 #This class is used to display text onto the surface
 class DisplayText(object):
@@ -273,6 +266,37 @@ star5 = Stars(random.randrange(0,display_width),-645, 2,29,blue, 'down',16)
 star6 = Stars(random.randrange(0,display_width),-732, 2,23,blue, 'down',15)
 
 #Function displays main menu screen.
+
+
+def IntroScreen():
+    pygame.time.delay(100)
+    fading = True
+    faded = False
+    screen = DisplayScreen(intro_screen)
+    opacity = 0
+    while fading:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        if faded:
+            opacity += 2
+            screen.fadeOut(20, opacity)
+            if opacity >= 255:
+                pygame.time.delay(3000)
+                fading = False
+        else:
+            opacity += 1
+            screen.fadeIn(20, opacity)
+            if opacity >= 255:
+                pygame.time.delay(5000)
+                opacity = 0
+                faded = True
+
+        pygame.display.update()
+        fps.tick(60)
+
+
 def MenuScreen():
     pygame.time.delay(100)
     menu = True
@@ -280,23 +304,31 @@ def MenuScreen():
     end = DisplayText('QUIT GAME',black,14)
     how_to_play = DisplayText('HOW TO PLAY', black, 14)
     screen = DisplayScreen(menu_screen)
-
+    opacity = 0
+    global fading_menu
     while menu:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        screen.show()
-        start_game_button.buttons(293,340,212,52, blue, white, 14, GenderScreen)
-        how_to_play.buttons(293,405,212,52, blue, white, 14, HowToPlayScreen)
-        end.buttons(293, 469, 212, 52, blue, white, 14, end_game)
 
-        star1.move()
-        star3.move()
-        star4.move()
-        star2.move()
-        star5.move()
-        star6.move()
+        if fading_menu:
+            opacity += 1
+            screen.fadeIn(20, opacity)
+            if opacity >= 255:
+                fading_menu = False
+        else:
+            screen.show()
+            start_game_button.buttons(293,340,212,52, blue, white, 14, GenderScreen)
+            how_to_play.buttons(293,405,212,52, blue, white, 14, HowToPlayScreen)
+            end.buttons(293, 469, 212, 52, blue, white, 14, end_game)
+
+            star1.move()
+            star3.move()
+            star4.move()
+            star2.move()
+            star5.move()
+            star6.move()
         pygame.display.update()
         fps.tick(60)
 
@@ -307,7 +339,7 @@ def PausedScreen():
     paused = True
     screen = DisplayScreen(paused_screen_img)
     resume = DisplayText('RESUME',black,14)
-    end = DisplayText('END', black, 14)
+    end = DisplayText('QUIT', black, 14)
 
     while paused:
         for event in pygame.event.get():
@@ -318,8 +350,8 @@ def PausedScreen():
         star1.move()
         star2.move()
 
-        resume.buttons(293, 340, 212, 52, blue, white, 14, unpause)
-        end.buttons(293, 405, 212, 52, blue, white, 14, end_game)
+        resume.buttons(280, 340, 240, 52, blue, white, 14, unpause)
+        end.buttons(280, 405, 240, 52, blue, white, 14, MenuScreen())
         pygame.display.update()
         fps.tick(60)
 
@@ -677,13 +709,13 @@ def game():
 
         # Detects whether spaceship collided with border
         if x > display_width - 32:
-            x_change = -3
+            x_change = -2
         if x < 0:
-            x_change = 3
+            x_change = 2
         if y > display_height - 64:
-            y_change = -3
+            y_change = -2
         if y < 90:
-            y_change = 3
+            y_change = 2
 
         # Detects if the first obstacle as crashed with the spaceship
         if y < mine1_y + 48 and y > mine1_y - 48:
@@ -729,8 +761,6 @@ def game():
         mine2_y += mine2_speed  # Moves second obstacle
         mine3_y += mine3_speed  # Moves third obstacle
 
-        # checks to see if any of the three obstacles are greater than the display
-        # height, if they are then they are position to the top of the screen'
         if mine1_y > display_height:
             mine1_y = - 900
             mine1_x = random.randrange(0, display_width)
@@ -762,11 +792,9 @@ def game():
             obstacle(asteroid, asteroid_X, asteroid_Y)  # Creates asteroid
             asteroid_X -= 6
             # the line below checks to see if the y coordinates of the spaceship and
-            # asteroid has crossed
             if y < asteroid_Y + 114 and y > asteroid_Y - 114:
-                # checks to see if the x cooridinates of the spaceship and asteroid are crossed
                 if x > asteroid_X and x < asteroid_X + 42 or x + 32 > asteroid_X and x + 32 < asteroid_X + 32:
-                    crashed.play()  # plays crashed sound
+                    crashed.play()
                     asteroid_X = random.randint(display_width, 1000)
                     asteroid_Y = random.randrange(0, display_height - 133)
                     health = health - 25
@@ -775,7 +803,7 @@ def game():
                 asteroid_Y = random.randrange(0, display_height - 133)  # resets y position of asteroid
 
         obstacle(health_powerup, health_x, health_y)  # creates health powerup
-        health_y += 5  # moves health down by 5 pixels
+        health_y += 5  # moves health powerup down by 5 pixels
 
         # checks to see if and y coordinate of spaceship and powerup are crossed
         if y < health_y + 42 and y > health_y - 42:
@@ -787,25 +815,6 @@ def game():
                 health = health + 25  # increases health
                 if health > 100:  # makes sure that health never goes above 0
                     health = 100
-
-        obstacle(speed_powerup, speed_x, speed_y)  # creates speed powerup
-        speed_y += 5  # moves speed powerup down by 5 pixels
-
-        # checks to see if and y coordinate of spaceship and powerup are crossed
-        if y < speed_y + 42 and y > speed_y - 42:
-            if x > speed_x and x < speed_x + 42 or x + 32 > speed_x and x + 32 < speed_x + 32:
-                powerup.play()  # plays powerup sound
-                speed_y = random.randrange(5000, 10000)  # resets position of speed_y
-                speed_y = health_y * -1  # Makes it negative so it's at the top
-                speed_x = random.randrange(0, display_width - 42)  # places speed_x i n a new location
-                x_change += 5  # speeds up spaceship by 5 pixels
-
-
-        star1.move()
-        star2.move()
-        star3.move()
-        star4.move()
-        star5.move()
 
 
         gameDisplay.blit(dashboard,(0,0)) # displays dashboard at the top of the screen
@@ -821,7 +830,8 @@ def game():
 
         pygame.display.update()
         fps.tick(60)
-DisplayScreen(intro_screen).fade(20)
+
+IntroScreen()
 menu_music.play(-1)
 MenuScreen()
 pygame.quit()
